@@ -1,0 +1,6 @@
+Flask
+Pillow
+img2pdf
+PyMuPDF
+Werkzeug
+tqdm

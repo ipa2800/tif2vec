@@ -1,0 +1,18 @@
+{
+  "input_directory": "input_tiffs",
+  "output_directory": "output_pdfs",
+  "log_directory": "logs",
+  "conversion_settings": {
+    "parallel_processing": true,
+    "num_workers": null,
+    "downsample_images": true,
+    "target_dpi": 150,
+    "jpeg_quality": 85,
+    "color_grayscale_compression": "JPEG",
+    "optimize_pdf_structure": true
+  },
+  "logging_settings": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(levelname)s - %(message)s"
+  }
+}

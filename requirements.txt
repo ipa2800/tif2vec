@@ -4,3 +4,7 @@ img2pdf
 PyMuPDF
 Werkzeug
 tqdm
+celery
+redis
+requests
+gradio

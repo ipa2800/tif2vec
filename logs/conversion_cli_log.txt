@@ -1,0 +1,87 @@
+2025-06-18 03:10:11,835 - INFO - --- TIFF到PDF CLI转换开始 ---
+2025-06-18 03:10:11,835 - INFO - 输入路径: test_tiffs/dummy2.tif
+2025-06-18 03:10:11,835 - INFO - 最终配置: {
+    "input_directory": "input_tiffs",
+    "output_directory": "test_output",
+    "log_directory": "logs",
+    "conversion_settings": {
+        "parallel_processing": true,
+        "num_workers": null,
+        "downsample_images": true,
+        "target_dpi": 150,
+        "jpeg_quality": 85,
+        "color_grayscale_compression": "JPEG",
+        "optimize_pdf_structure": true
+    },
+    "logging_settings": {
+        "level": "INFO",
+        "format": "%(asctime)s - %(levelname)s - %(message)s"
+    },
+    "external_api_hooks": {
+        "on_before_conversion_start": {
+            "enabled": false,
+            "description": "Called before any processing of a TIFF file begins. Can be used for validation or pre-fetching.",
+            "url": "http://localhost:8080/api/validate",
+            "method": "POST",
+            "headers": {
+                "X-API-Key": "YOUR_API_KEY_HERE",
+                "Content-Type": "application/json"
+            },
+            "timeout_seconds": 10,
+            "payload_to_send": "file_path",
+            "custom_json_payload": {
+                "file_id": "{file_name}",
+                "file_size_bytes": "{file_size_bytes}"
+            },
+            "blocking": true,
+            "success_http_codes": [
+                200,
+                201,
+                204
+            ],
+            "retry_attempts": 0,
+            "retry_delay_seconds": 5
+        },
+        "on_after_pdf_generation": {
+            "enabled": false,
+            "description": "Called after the PDF (potentially unoptimized) is generated from a TIFF file.",
+            "url": "http://localhost:8080/api/log_pdf",
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "timeout_seconds": 15,
+            "payload_to_send": "pdf_bytes_metadata",
+            "custom_json_payload": {
+                "original_tiff": "{file_name_original_tiff}",
+                "pdf_size_bytes": "{pdf_size_bytes}",
+                "status": "generated"
+            },
+            "blocking": false,
+            "success_http_codes": [
+                200
+            ],
+            "retry_attempts": 1,
+            "retry_delay_seconds": 10
+        }
+    }
+}
+2025-06-18 03:10:11,835 - INFO - 找到 1 个TIFF文件处理。
+2025-06-18 03:10:11,835 - INFO - 串行处理。
+2025-06-18 03:10:11,835 - INFO - CLI：开始处理: test_tiffs/dummy2.tif
+2025-06-18 03:10:11,835 - INFO - 开始为TIFF文件 test_tiffs/dummy2.tif 生成PDF。
+2025-06-18 03:10:11,835 - DEBUG - API钩子 'on_before_conversion_start' 未配置或已禁用。
+2025-06-18 03:10:11,835 - WARNING - Image.MAX_IMAGE_PIXELS未设置，临时设为None。
+2025-06-18 03:10:11,836 - ERROR - 转换失败：Pillow无法识别 test_tiffs/dummy2.tif 或文件损坏。
+Traceback (most recent call last):
+  File "/app/tiff_converter.py", line 132, in convert_single_tiff_to_pdf_bytes
+    with Image.open(tiff_path) as img:
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jules/.pyenv/versions/3.12.11/lib/python3.12/site-packages/PIL/Image.py", line 3572, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'test_tiffs/dummy2.tif'
+2025-06-18 03:10:11,836 - ERROR - 未能将TIFF test_tiffs/dummy2.tif 转为PDF字节流。
+2025-06-18 03:10:11,836 - ERROR - CLI：为 test_tiffs/dummy2.tif 生成PDF字节流失败。
+2025-06-18 03:10:11,836 - INFO - --- TIFF到PDF CLI转换结束 ---
+2025-06-18 03:10:11,836 - INFO - 总文件: 1, 成功: 0, 失败: 1
+2025-06-18 03:10:11,836 - INFO - 总耗时: 0.00s

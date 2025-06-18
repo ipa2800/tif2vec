@@ -14,5 +14,45 @@
   "logging_settings": {
     "level": "INFO",
     "format": "%(asctime)s - %(levelname)s - %(message)s"
+  },
+  "external_api_hooks": {
+    "on_before_conversion_start": {
+      "enabled": false,
+      "description": "Called before any processing of a TIFF file begins. Can be used for validation or pre-fetching.",
+      "url": "http://localhost:8080/api/validate",
+      "method": "POST",
+      "headers": {
+        "X-API-Key": "YOUR_API_KEY_HERE",
+        "Content-Type": "application/json"
+      },
+      "timeout_seconds": 10,
+      "payload_to_send": "file_path",
+      "custom_json_payload": {
+        "file_id": "{file_name}",
+        "file_size_bytes": "{file_size_bytes}"
+      },
+      "blocking": true,
+      "success_http_codes": [200, 201, 204],
+      "retry_attempts": 0,
+      "retry_delay_seconds": 5
+    },
+    "on_after_pdf_generation": {
+      "enabled": false,
+      "description": "Called after the PDF (potentially unoptimized) is generated from a TIFF file.",
+      "url": "http://localhost:8080/api/log_pdf",
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "timeout_seconds": 15,
+      "payload_to_send": "pdf_bytes_metadata",
+      "custom_json_payload": {
+          "original_tiff": "{file_name_original_tiff}",
+          "pdf_size_bytes": "{pdf_size_bytes}",
+          "status": "generated"
+      },
+      "blocking": false,
+      "success_http_codes": [200],
+      "retry_attempts": 1,
+      "retry_delay_seconds": 10
+    }
   }
 }
